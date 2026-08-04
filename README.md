@@ -5,8 +5,8 @@ management, dependency injection, networking, code generation, Firebase integrat
 and CI/CD tooling the way a production app would use them — built as a reference/portfolio
 project.
 
-> **Status**: foundation layer only (see [Roadmap](#roadmap)). No feature UI yet — this establishes
-> the architecture everything else builds on.
+> **Status**: foundation layer + `auth` feature (Firebase Auth, email/password) done. See
+> [Roadmap](#roadmap) for what's next.
 
 ## Why these choices
 
@@ -46,46 +46,85 @@ project.
   follow the identical pattern (a `main_staging.dart` + a third Firebase project), but a
   three-environment setup is real ongoing upkeep (security rules, quota, cleanup) for a project
   whose primary audience is people reading the code, not a QA team.
+- **Firebase config selected in Dart, not native files** — two Firebase projects
+  (`flutter-enterprise-kit-dev`/`-prod`) were set up via `flutterfire configure`, once per flavor,
+  each with `--out=lib/firebase_options_<flavor>.dart`. `bootstrap.dart` picks the right
+  `DefaultFirebaseOptions.currentPlatform` based on `FlavorConfig.instance.flavor` and passes it
+  explicitly to `Firebase.initializeApp(options: ...)`. This is what makes two-Firebase-project
+  flavors possible without native Android/iOS product-flavor build variants (see the `get_it`
+  choice above — same "keep the Dart layer as the single source of truth" instinct).
+
+  One consequence worth knowing about: Firebase's native plugins auto-configure a default app
+  from whatever config file is bundled (`GoogleService-Info.plist` on iOS/macOS,
+  `google-services.json`'s injected resources via a `FirebaseInitProvider` `ContentProvider` on
+  Android) *before* any Dart code runs. Left in place, that races our explicit
+  `Firebase.initializeApp()` call and throws `[core/duplicate-app] A Firebase App named
+  "[DEFAULT]" already exists`. Fixed by removing `GoogleService-Info.plist` from the iOS/macOS
+  Xcode projects entirely (`flutterfire configure` writes them, but since we pass
+  `FirebaseOptions` explicitly they're redundant) and disabling `FirebaseInitProvider` in
+  `android/app/src/main/AndroidManifest.xml` via `tools:node="remove"`. `google-services.json`
+  and the Google Services Gradle plugin are left in place — harmless once the auto-init
+  `ContentProvider` is disabled, and some Firebase tooling still expects them present.
+- **macOS network client entitlement** — `flutter create`'s default macOS entitlements
+  (`macos/Runner/{DebugProfile,Release}.entitlements`) enable App Sandbox with
+  `com.apple.security.network.server` (needed for the debug/VM-service connection) but *not*
+  `com.apple.security.network.client`. Without it, every outbound network call — Firebase Auth,
+  and later Dio for the `posts` feature — fails with a sandboxed
+  `network-request-failed`/connection-refused error that has nothing to do with the request
+  itself. Added `network.client: true` to both entitlements files; this is a one-time fix that
+  covers every feature that talks to the network on macOS, not just auth.
 
 ## Project structure
 
 ```
 lib/
-  core/                # Cross-feature infrastructure — nothing here knows about a specific feature
-    config/             # FlavorConfig: dev/prod environment, API base URL, app name
-    di/                 # get_it registration (configureDependencies())
-    error/               # Exception types (data layer) + Failure sealed class (domain/presentation)
-    network/            # Dio client factory + interceptors (logging, error normalization)
-    router/             # go_router configuration
-    theme/               # AppTheme / AppColors / AppTextStyles design tokens
-    usecase/             # UseCase<ResultType, Params> base class + NoParams
-    presentation/        # Shared widgets/pages not owned by a specific feature
+  core/                  # Cross-feature infrastructure — nothing here knows about a specific feature
+    config/               # FlavorConfig: dev/prod environment, API base URL, app name
+    di/                   # get_it registration (configureDependencies())
+    error/                 # Exception types (data layer) + Failure sealed class (domain/presentation)
+    network/              # Dio client factory + interceptors (logging, error normalization)
+    router/               # go_router config + redirect-on-auth-state (GoRouterRefreshStream)
+    theme/                 # AppTheme / AppColors / AppTextStyles design tokens
+    usecase/               # UseCase<ResultType, Params> base class + NoParams
   features/
-    auth/                # Firebase Auth feature (scaffolded, not yet implemented)
-    posts/               # REST/Dio CRUD feature (scaffolded, not yet implemented)
+    auth/                  # Firebase Auth: email/password sign-in, register, sign-out
       data/
-        datasources/      # Remote/local data sources — throw typed exceptions
-        models/            # Freezed + json_serializable DTOs, map to/from domain entities
-        repositories/      # Implement domain repository interfaces, catch exceptions -> Failure
+        datasources/        # AuthRemoteDataSource — wraps FirebaseAuth, throws typed exceptions
+        models/              # firebase_auth.User -> domain User mapper (no JSON here, see below)
+        repositories/        # AuthRepositoryImpl — exceptions -> Failure
       domain/
-        entities/          # Plain domain objects, no serialization/Flutter knowledge
-        repositories/       # Abstract interfaces the data layer implements
-        usecases/           # One class per business action, extends UseCase
+        entities/            # User
+        repositories/         # AuthRepository interface
+        usecases/             # SignInWithEmailAndPassword, RegisterWithEmailAndPassword, SignOut
       presentation/
-        cubit/              # State management for this feature
-        pages/               # Screens
-        widgets/             # Feature-local widgets
-  app.dart               # MaterialApp.router + theme + router wiring
-  bootstrap.dart          # Shared init: DI, error zone, runApp — identical across flavors
-  main_development.dart   # Sets FlavorConfig for dev, then calls bootstrap()
-  main_production.dart    # Sets FlavorConfig for prod, then calls bootstrap()
+        cubit/                # AuthCubit (global sign-in state), LoginCubit, RegisterCubit
+        pages/                 # LoginPage, RegisterPage
+        widgets/               # AuthTextField
+      auth_injection.dart     # configureAuthDependencies(), called from core/di/injection.dart
+    home/                   # Post-login landing page (will grow once `posts` lands)
+      presentation/pages/     # HomePage
+    posts/                  # REST/Dio CRUD feature (scaffolded, not yet implemented)
+      data/{datasources,models,repositories}/
+      domain/{entities,repositories,usecases}/
+      presentation/{cubit,pages,widgets}/
+  app.dart                 # MaterialApp.router + theme + router wiring, provides AuthCubit
+  bootstrap.dart            # Shared init: Firebase, DI, error zone, runApp — same across flavors
+  main_development.dart     # Sets FlavorConfig for dev, then calls bootstrap()
+  main_production.dart      # Sets FlavorConfig for prod, then calls bootstrap()
+  firebase_options_development.dart  # Generated by `flutterfire configure`, dev project
+  firebase_options_production.dart   # Generated by `flutterfire configure`, prod project
 test/
-  core/                  # Mirrors lib/core — unit tests for failures, use cases, widget tests
-  features/               # Will mirror lib/features as features land
+  core/                    # Mirrors lib/core — unit tests for failures, use cases
+  features/auth/             # Repository test (mocktail) + Cubit tests (bloc_test)
 ```
 
 Each feature under `lib/features/` follows the same `data/domain/presentation` shape, so once
-you've read one feature you can navigate any other.
+you've read one feature you can navigate any other. `auth` is the fullest example — read it first.
+
+The `auth` feature also shows a deliberate deviation: `data/models/` has no Freezed/
+`json_serializable` model. The Firebase SDK already returns a typed `User` object, not raw JSON,
+so there's nothing to deserialize — just a plain mapping extension to the domain entity. The
+`posts` feature (REST-backed) will show the more typical Freezed-model shape for comparison.
 
 ## Getting started
 
@@ -93,6 +132,15 @@ you've read one feature you can navigate any other.
 flutter pub get
 dart run build_runner build --delete-conflicting-outputs   # generates *.freezed.dart / *.g.dart
 flutter run -t lib/main_development.dart                   # or lib/main_production.dart
+```
+
+`firebase_options_development.dart`/`firebase_options_production.dart` are checked in and point
+at this repo's own Firebase projects — to run against your own, create two Firebase projects
+with Email/Password Authentication enabled, then regenerate both files:
+
+```bash
+flutterfire configure --project=<your-dev-project> --out=lib/firebase_options_development.dart
+flutterfire configure --project=<your-prod-project> --out=lib/firebase_options_production.dart
 ```
 
 Run the test suite:
@@ -104,14 +152,11 @@ flutter test
 ## Roadmap
 
 This repo is being built incrementally in public. Current state: foundation layer (DI, error
-handling, networking, theming, routing, flavors) with a placeholder landing screen proving it's
-all wired together correctly.
+handling, networking, theming, routing, flavors) plus a working `auth` feature — register, sign
+in, sign out, with the router redirecting based on live auth state.
 
 Next up:
-- `flutterfire configure` against two Firebase projects (`-dev` / `-prod`) with Email/Password
-  Authentication enabled
-- `auth` feature: Firebase Auth end-to-end (data source → repository → use cases → cubit → UI)
 - `posts` feature: REST CRUD via Dio against a public API, showing the same architecture with a
-  different data source
+  different data source (and a "real" Freezed data model, unlike `auth`)
 - Fastlane for automated builds/deploys per flavor
 - GitHub Actions CI: analyze + test on every PR, flavor-specific builds on release

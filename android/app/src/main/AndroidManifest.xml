@@ -1,8 +1,19 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
     <application
         android:label="flutter_enterprise_starter_kit"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
+        <!-- Firebase normally auto-initializes a default app from
+             google-services.json via this ContentProvider. We select
+             FirebaseOptions explicitly per flavor in bootstrap.dart instead,
+             so disable the automatic init to avoid a [core/duplicate-app]
+             crash (same reasoning as removing GoogleService-Info.plist from
+             the iOS/macOS bundles — see README). -->
+        <provider
+            android:name="com.google.firebase.provider.FirebaseInitProvider"
+            android:authorities="${applicationId}.firebaseinitprovider"
+            tools:node="remove" />
         <activity
             android:name=".MainActivity"
             android:exported="true"

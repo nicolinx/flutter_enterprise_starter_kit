@@ -1,0 +1,19 @@
+# This project uses very_good_analysis instead of the default flutter_lints
+# for a stricter, more opinionated lint set — deliberate for a starter kit
+# meant to demonstrate enterprise-grade conventions.
+include: package:very_good_analysis/analysis_options.yaml
+
+linter:
+  rules:
+    # very_good_analysis requires dartdoc on every public member; too strict
+    # for a starter kit where names are meant to be self-explanatory.
+    public_member_api_docs: false
+    # Single-method abstract classes (UseCase<Type, Params>, repository
+    # interfaces) are a deliberate Clean Architecture pattern here, not an
+    # accident to flag.
+    one_member_abstracts: false
+
+analyzer:
+  exclude:
+    - "**/*.freezed.dart"
+    - "**/*.g.dart"

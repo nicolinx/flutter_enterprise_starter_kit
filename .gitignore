@@ -33,6 +33,11 @@ migrate_working_dir/
 /build/
 /coverage/
 
+# Code generation related (freezed, json_serializable) — run
+# `dart run build_runner build` after checkout, see README.
+*.freezed.dart
+*.g.dart
+
 # Symbolication related
 app.*.symbols
 

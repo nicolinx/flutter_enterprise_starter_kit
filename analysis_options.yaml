@@ -17,3 +17,6 @@ analyzer:
   exclude:
     - "**/*.freezed.dart"
     - "**/*.g.dart"
+    # CocoaPods/SPM vendor build artifacts (e.g. plugin "example" apps
+    # copied into build/ios/SourcePackages) — not our code.
+    - "build/**"

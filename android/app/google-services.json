@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "257097491357",
+    "project_id": "flutter-enterprise-kit-prod",
+    "storage_bucket": "flutter-enterprise-kit-prod.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:257097491357:android:51db5544ddcee072914574",
+        "android_client_info": {
+          "package_name": "com.example.flutter_enterprise_starter_kit"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCQ8ZmxMvg2zprAmcn6ptmCr9oC9SgRZ1k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

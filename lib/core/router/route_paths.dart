@@ -2,4 +2,6 @@
 /// instead of a magic string when navigating.
 abstract class RoutePaths {
   static const root = '/';
+  static const login = '/login';
+  static const register = '/register';
 }

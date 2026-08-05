@@ -36,7 +36,7 @@ migrate_working_dir/
 /build/
 /coverage/
 
-# Code generation related (freezed, json_serializable) — run
+# Code generation related (freezed, json_serializable), run
 # `dart run build_runner build` after checkout, see README.
 *.freezed.dart
 *.g.dart
@@ -51,3 +51,13 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Fastlane
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots/**/*.png
+fastlane/test_output
+# No release keystore exists yet (see ARCHITECTURE.md); these are here
+# defensively so one is never committed by accident if that changes.
+*.keystore
+key.properties

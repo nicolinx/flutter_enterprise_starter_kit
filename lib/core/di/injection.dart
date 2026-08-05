@@ -4,6 +4,7 @@ import 'package:flutter_enterprise_starter_kit/core/config/flavor_config.dart';
 import 'package:flutter_enterprise_starter_kit/core/network/dio_client.dart';
 import 'package:flutter_enterprise_starter_kit/core/network/network_info.dart';
 import 'package:flutter_enterprise_starter_kit/features/auth/auth_injection.dart';
+import 'package:flutter_enterprise_starter_kit/features/posts/posts_injection.dart';
 import 'package:get_it/get_it.dart';
 
 final GetIt getIt = GetIt.instance;
@@ -23,4 +24,5 @@ Future<void> configureDependencies() async {
     );
 
   configureAuthDependencies();
+  await configurePostsDependencies();
 }

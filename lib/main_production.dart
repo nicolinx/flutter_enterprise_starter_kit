@@ -5,8 +5,8 @@ Future<void> main() async {
   FlavorConfig.initialize(
     flavor: Flavor.production,
     appName: 'Starter Kit',
-    // Placeholder REST backend for the `posts` feature; swap for a real
-    // API when that feature is implemented.
+    // JSONPlaceholder: a public fake REST API. Real for reads; writes
+    // (POST/PUT/DELETE) succeed but don't persist, see the `posts` feature.
     apiBaseUrl: 'https://jsonplaceholder.typicode.com',
   );
 

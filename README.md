@@ -16,13 +16,13 @@ demo. Built as a public reference project.
 - [x] Typed error handling (`Freezed` + `Either`, via `fpdart`)
 - [x] Unit & Cubit tests (`mocktail`, `bloc_test`)
 - [x] GitHub Actions CI: analyze + test on every PR
-- [ ] REST API feature via `Dio` (in progress)
+- [x] REST API feature via `Dio`, with local caching (`posts`)
 - [ ] Fastlane
 
 ## Tech stack
 
-Flutter, Dart, flutter_bloc, get_it, Dio, Freezed, Firebase Auth, go_router, fpdart,
-very_good_analysis, GitHub Actions
+Flutter, Dart, flutter_bloc, get_it, Dio, Freezed, json_serializable, Firebase Auth, go_router,
+fpdart, hive_ce, very_good_analysis, GitHub Actions
 
 ## Project structure
 
@@ -32,7 +32,7 @@ lib/
   features/
     auth/         # Firebase email/password auth, the fullest example, read this one first
     home/         # Post-login landing page
-    posts/        # REST/Dio feature (scaffolded, in progress)
+    posts/        # REST CRUD via Dio, real Freezed+json_serializable model, Hive cache
   app.dart, bootstrap.dart, main_development.dart, main_production.dart
 ```
 
@@ -65,8 +65,6 @@ flutter test
 
 ## Roadmap
 
-- [ ] `posts`: REST CRUD via Dio, with a "real" Freezed data model (unlike `auth`) and local
-  caching
 - [ ] Fastlane: automated builds/deploys per flavor, plus flavor-specific builds on release
   (the other half of the CI story, deliberately kept separate from the analyze/test workflow
   above)

@@ -121,11 +121,12 @@ feature/
     widgets/       # Feature-local widgets.
 ```
 
-`auth` is the fullest example, read it first, then any other feature follows the same shape.
-Its `data/models/` is a deliberate deviation: since Firebase's SDK already returns a typed `User`
-object (not raw JSON), there's just a small mapping extension (`user_mapper.dart`) instead of a
-full Freezed/`json_serializable` model. The `posts` feature (REST-backed) will show the more
-typical Freezed-model shape for comparison once it lands.
+`auth` and `posts` are worth reading side by side: same shape, different data source.
+`auth`'s `data/models/` is a deliberate deviation: since Firebase's SDK already returns a typed
+`User` object (not raw JSON), there's just a small mapping extension (`user_mapper.dart`) instead
+of a full Freezed/`json_serializable` model. `posts` shows the more typical version: `PostModel`
+is a real `@freezed` + `@JsonSerializable` DTO with generated `fromJson`/`toJson`, since its data
+source (JSONPlaceholder over Dio) actually hands back JSON that needs parsing.
 
 ### Auth request walkthrough
 
@@ -150,3 +151,27 @@ automatically whenever `AuthCubit` emits (via `GoRouterRefreshStream`, which bri
 stream to something `go_router` can listen to). A successful sign-in flips `AuthCubit` to
 `authenticated`, and the router redirects away from `/login` on its own. The same mechanism
 handles sign-out in reverse.
+
+### `posts`: cache-aside reads, remote-only writes
+
+`PostRepositoryImpl.getPosts()` is the one method in the codebase that branches on
+`NetworkInfo.isConnected` (already built in `core/network/`, unused until this feature):
+online, it fetches from `PostRemoteDataSource` (Dio against JSONPlaceholder), writes the result
+into `PostLocalDataSource` (a Hive box, storing each post as its raw `toJson()` map, no generated
+`TypeAdapter` needed since Hive stores `Map`/`List`/primitives natively), then returns it.
+Offline, it skips the network entirely and reads whatever was last cached, returning
+`Left(Failure.cache(...))` only if nothing has been cached yet. `createPost`/`updatePost`/
+`deletePost` are remote-only, there's no offline write queue; that would be a meaningfully
+different (and bigger) feature.
+
+One Dio-specific detail worth calling out: `core/network/interceptors/error_interceptor.dart`
+normalizes every `DioException` by calling `handler.next(err.copyWith(error: ourException))`, so
+the typed exception arrives *inside* a rethrown `DioException.error`, not as a bare throw.
+`PostRemoteDataSource` unwraps this (catch `DioException`, rethrow `e.error`) so the "data
+sources only throw typed exceptions" rule still holds above it, exactly like `auth`'s data source
+does for `FirebaseAuthException`.
+
+Also worth knowing if you run the app: JSONPlaceholder is a fake API. `POST`/`PUT`/`DELETE`
+requests return a plausible-looking success response, but nothing is actually persisted
+server-side, refreshing the list after creating a post won't show it. That's expected, not a bug
+in this codebase.

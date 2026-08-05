@@ -9,20 +9,30 @@
 
 default_platform(:android)
 
+# Every distributed build needs a unique, increasing build number so
+# Firebase App Distribution (and testers) can tell releases apart, see
+# ARCHITECTURE.md. CI passes `build_number:<github.run_number>`; without it
+# (plain local `fastlane android build_dev`), `flutter build` falls back to
+# whatever's in pubspec.yaml, fine for a one-off local compile check.
+def build_number_args(options)
+  build_number = options[:build_number]
+  build_number ? ["--build-number=#{build_number}"] : []
+end
+
 platform :android do
   desc "Build the dev flavor debug APK"
-  lane :build_dev do
-    sh("flutter", "build", "apk", "--debug", "-t", "lib/main_development.dart")
+  lane :build_dev do |options|
+    sh("flutter", "build", "apk", "--debug", "-t", "lib/main_development.dart", *build_number_args(options))
   end
 
   desc "Build the prod flavor release APK"
-  lane :build_prod do
-    sh("flutter", "build", "apk", "--release", "-t", "lib/main_production.dart")
+  lane :build_prod do |options|
+    sh("flutter", "build", "apk", "--release", "-t", "lib/main_production.dart", *build_number_args(options))
   end
 
   desc "Build and distribute the dev flavor via Firebase App Distribution"
-  lane :distribute_dev do
-    build_dev
+  lane :distribute_dev do |options|
+    build_dev(build_number: options[:build_number])
     firebase_app_distribution(
       app: "1:499329149829:android:521019fb9aaf2906e9b2ec", # flutter-enterprise-kit-dev
       apk_path: "build/app/outputs/flutter-apk/app-debug.apk",
@@ -32,8 +42,8 @@ platform :android do
   end
 
   desc "Build and distribute the prod flavor via Firebase App Distribution"
-  lane :distribute_prod do
-    build_prod
+  lane :distribute_prod do |options|
+    build_prod(build_number: options[:build_number])
     firebase_app_distribution(
       app: "1:257097491357:android:51db5544ddcee072914574", # flutter-enterprise-kit-prod
       apk_path: "build/app/outputs/flutter-apk/app-release.apk",
@@ -46,7 +56,8 @@ end
 platform :ios do
   # No paid Apple Developer Program account is attached to this project (see
   # ARCHITECTURE.md), so these lanes can only validate that the app compiles
-  # for iOS, not produce a signed, distributable build.
+  # for iOS, not produce a signed, distributable build. Not part of the
+  # distribution pipeline, so no build_number handling needed here.
   desc "Validate the dev flavor builds (no code signing)"
   lane :build_dev do
     sh("flutter", "build", "ios", "--no-codesign", "-t", "lib/main_development.dart")

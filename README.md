@@ -1,5 +1,7 @@
 # flutter-enterprise-starter-kit
 
+[![CI](https://github.com/nicolinx/flutter_enterprise_starter_kit/actions/workflows/ci.yml/badge.svg)](https://github.com/nicolinx/flutter_enterprise_starter_kit/actions/workflows/ci.yml)
+
 A Flutter starter kit built the way a production app would be set up: Clean Architecture, Cubit
 state management, dependency injection, Firebase, and multi-flavor builds, not just a tutorial
 demo. Built as a public reference project.
@@ -13,14 +15,14 @@ demo. Built as a public reference project.
 - [x] Dev/prod flavors, each with its own Firebase project
 - [x] Typed error handling (`Freezed` + `Either`, via `fpdart`)
 - [x] Unit & Cubit tests (`mocktail`, `bloc_test`)
+- [x] GitHub Actions CI: analyze + test on every PR
 - [ ] REST API feature via `Dio` (in progress)
 - [ ] Fastlane
-- [ ] GitHub Actions CI
 
 ## Tech stack
 
 Flutter, Dart, flutter_bloc, get_it, Dio, Freezed, Firebase Auth, go_router, fpdart,
-very_good_analysis
+very_good_analysis, GitHub Actions
 
 ## Project structure
 
@@ -63,6 +65,8 @@ flutter test
 
 ## Roadmap
 
-- [ ] `posts`: REST CRUD via Dio, with a "real" Freezed data model (unlike `auth`)
-- [ ] Fastlane: automated builds/deploys per flavor
-- [ ] GitHub Actions: analyze + test on every PR
+- [ ] `posts`: REST CRUD via Dio, with a "real" Freezed data model (unlike `auth`) and local
+  caching
+- [ ] Fastlane: automated builds/deploys per flavor, plus flavor-specific builds on release
+  (the other half of the CI story, deliberately kept separate from the analyze/test workflow
+  above)

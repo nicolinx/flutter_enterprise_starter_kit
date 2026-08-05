@@ -175,3 +175,30 @@ Also worth knowing if you run the app: JSONPlaceholder is a fake API. `POST`/`PU
 requests return a plausible-looking success response, but nothing is actually persisted
 server-side, refreshing the list after creating a post won't show it. That's expected, not a bug
 in this codebase.
+
+## Why Firebase App Distribution, not the app stores
+
+`fastlane/Fastfile` distributes Android builds through Firebase App Distribution rather than the
+Play Store or TestFlight. No Play Console or App Store Connect account is attached to this
+project, and setting one up is a real, ongoing cost (a one-time Play Console fee, a $99/year
+Apple Developer Program membership) that doesn't make sense purely to demonstrate the pattern.
+Firebase App Distribution needs neither: this project already has two Firebase projects
+(`flutter-enterprise-kit-dev`/`-prod`, set up for `auth`), so distribution lanes just reuse them.
+It's also a genuinely standard real-world choice, most teams distribute internal/beta builds this
+way before anything reaches a store, not a workaround invented just for this repo.
+
+The `android` platform in the Fastfile gets full `build_dev`/`build_prod`/`distribute_dev`/
+`distribute_prod` lanes. The `ios` platform only gets `build_dev`/`build_prod`, compiling with
+`flutter build ios --no-codesign` to prove the app still builds for iOS, nothing more. Producing
+an actual installable IPA (for Firebase App Distribution or anywhere else) requires a paid Apple
+Developer Program account to generate a real provisioning profile; the free personal team used
+earlier only satisfies Xcode's local code-signing requirement (see the macOS Keychain entitlement
+note above), it can't produce a distributable build. This is a real constraint of the project's
+current setup, documented rather than hidden, not a code problem to fix.
+
+Release APKs are built with Flutter's default template signing (the debug key, with the `TODO`
+comment Flutter's own template leaves in `android/app/build.gradle.kts`). That's fine for Firebase
+App Distribution, testers install what you send them, but it would not be accepted by the Play
+Store, which requires a real release keystore. Generating and safely wiring one (as a CI secret,
+never committed) is real, separate work, listed in the README's Roadmap rather than folded in
+here.

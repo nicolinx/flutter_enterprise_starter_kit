@@ -1,0 +1,59 @@
+# This Fastfile lives at the project root (not android/fastlane or
+# ios/fastlane) because every lane just shells out to `flutter build`, which
+# needs to run from the Flutter project root, not a platform subdirectory.
+#
+# Flavors here are Dart-entrypoint-only (main_development.dart /
+# main_production.dart, see FlavorConfig), not native Gradle product
+# flavors or Xcode schemes (see ARCHITECTURE.md). Lanes pick the flavor by
+# choosing which entrypoint to build, not by invoking a native variant.
+
+default_platform(:android)
+
+platform :android do
+  desc "Build the dev flavor debug APK"
+  lane :build_dev do
+    sh("flutter", "build", "apk", "--debug", "-t", "lib/main_development.dart")
+  end
+
+  desc "Build the prod flavor release APK"
+  lane :build_prod do
+    sh("flutter", "build", "apk", "--release", "-t", "lib/main_production.dart")
+  end
+
+  desc "Build and distribute the dev flavor via Firebase App Distribution"
+  lane :distribute_dev do
+    build_dev
+    firebase_app_distribution(
+      app: "1:499329149829:android:521019fb9aaf2906e9b2ec", # flutter-enterprise-kit-dev
+      apk_path: "build/app/outputs/flutter-apk/app-debug.apk",
+      groups: "testers",
+      firebase_cli_token: ENV["FIREBASE_TOKEN"],
+    )
+  end
+
+  desc "Build and distribute the prod flavor via Firebase App Distribution"
+  lane :distribute_prod do
+    build_prod
+    firebase_app_distribution(
+      app: "1:257097491357:android:51db5544ddcee072914574", # flutter-enterprise-kit-prod
+      apk_path: "build/app/outputs/flutter-apk/app-release.apk",
+      groups: "testers",
+      firebase_cli_token: ENV["FIREBASE_TOKEN"],
+    )
+  end
+end
+
+platform :ios do
+  # No paid Apple Developer Program account is attached to this project (see
+  # ARCHITECTURE.md), so these lanes can only validate that the app compiles
+  # for iOS, not produce a signed, distributable build.
+  desc "Validate the dev flavor builds (no code signing)"
+  lane :build_dev do
+    sh("flutter", "build", "ios", "--no-codesign", "-t", "lib/main_development.dart")
+  end
+
+  desc "Validate the prod flavor builds (no code signing)"
+  lane :build_prod do
+    sh("flutter", "build", "ios", "--no-codesign", "-t", "lib/main_production.dart")
+  end
+end

@@ -1,0 +1,7 @@
+for_platform :android do
+  package_name("com.example.flutter_enterprise_starter_kit")
+end
+
+for_platform :ios do
+  app_identifier("com.example.flutterEnterpriseStarterKit")
+end

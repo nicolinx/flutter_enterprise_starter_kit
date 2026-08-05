@@ -5,6 +5,9 @@ import 'package:flutter_enterprise_starter_kit/features/auth/presentation/cubit/
 import 'package:flutter_enterprise_starter_kit/features/auth/presentation/pages/login_page.dart';
 import 'package:flutter_enterprise_starter_kit/features/auth/presentation/pages/register_page.dart';
 import 'package:flutter_enterprise_starter_kit/features/home/presentation/pages/home_page.dart';
+import 'package:flutter_enterprise_starter_kit/features/posts/presentation/pages/post_detail_page.dart';
+import 'package:flutter_enterprise_starter_kit/features/posts/presentation/pages/post_form_page.dart';
+import 'package:flutter_enterprise_starter_kit/features/posts/presentation/pages/posts_list_page.dart';
 import 'package:go_router/go_router.dart';
 
 /// Single source of truth for app navigation. `redirect` reads `authCubit`
@@ -39,6 +42,28 @@ GoRouter buildAppRouter(AuthCubit authCubit) {
       GoRoute(
         path: RoutePaths.register,
         builder: (context, state) => const RegisterPage(),
+      ),
+      GoRoute(
+        path: RoutePaths.posts,
+        builder: (context, state) => const PostsListPage(),
+        routes: [
+          GoRoute(
+            path: 'new',
+            builder: (context, state) => const PostFormPage(),
+          ),
+          GoRoute(
+            path: ':id',
+            builder: (context, state) =>
+                PostDetailPage(id: int.parse(state.pathParameters['id']!)),
+            routes: [
+              GoRoute(
+                path: 'edit',
+                builder: (context, state) =>
+                    PostFormPage(id: int.parse(state.pathParameters['id']!)),
+              ),
+            ],
+          ),
+        ],
       ),
     ],
   );

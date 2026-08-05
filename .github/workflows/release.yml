@@ -1,6 +1,15 @@
 name: Release
 
+# Two ways this runs:
+# - push to main: always distributes the dev flavor automatically, no
+#   human action needed, the standard "internal build is always current"
+#   pattern.
+# - workflow_dispatch: manual, lets you pick dev or prod. Production stays
+#   manual on purpose (see ARCHITECTURE.md), a deliberate human decision,
+#   not a technical limitation.
 on:
+  push:
+    branches: [main]
   workflow_dispatch:
     inputs:
       flavor:
@@ -27,11 +36,29 @@ jobs:
       - name: Generate code (freezed / json_serializable)
         run: dart run build_runner build --delete-conflicting-outputs
 
+      # Safety gate specific to this job: don't ship a build that fails
+      # analyze/test, even if this ever runs on a push that somehow bypassed
+      # ci.yml (e.g. branch protection not configured).
+      - name: Analyze
+        run: flutter analyze
+
+      - name: Test
+        run: flutter test
+
       - uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true
 
+      - name: Determine flavor
+        id: flavor
+        run: |
+          if [ "${{ github.event_name }}" = "push" ]; then
+            echo "flavor=dev" >> "$GITHUB_OUTPUT"
+          else
+            echo "flavor=${{ inputs.flavor }}" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Distribute via Fastlane
         env:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
-        run: bundle exec fastlane android distribute_${{ inputs.flavor }}
+        run: bundle exec fastlane android distribute_${{ steps.flavor.outputs.flavor }}

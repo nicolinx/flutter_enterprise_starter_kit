@@ -202,3 +202,18 @@ App Distribution, testers install what you send them, but it would not be accept
 Store, which requires a real release keystore. Generating and safely wiring one (as a CI secret,
 never committed) is real, separate work, listed in the README's Roadmap rather than folded in
 here.
+
+## Why dev auto-deploys but prod stays manual
+
+`.github/workflows/release.yml` triggers `distribute_dev` on every push to `main`, no one has to
+remember to ship a build, the latest `main` is always installable from Firebase App Distribution.
+`distribute_prod` stays behind `workflow_dispatch` (a manual click in the Actions tab with a
+flavor picker), it never runs on its own.
+
+This is the standard split for mobile CI/CD, not a gap to close later. Auto-deploying an internal
+build on every merge is low-risk and exactly what internal testers want, always-current. Auto-
+publishing a production build is a different risk profile: a bad release is expensive to undo
+(users have to update, or a store review has to catch it), so real teams keep a deliberate human
+"ship it" moment for production even when everything technically *could* run unattended.
+"Continuous deployment" for mobile in practice usually means continuous *delivery*: always ready
+to ship, one click away, not shipping itself.

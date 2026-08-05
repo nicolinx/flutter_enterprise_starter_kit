@@ -72,8 +72,12 @@ fastlane ios build_dev            # compiles only, no signing (see ARCHITECTURE.
 ```
 
 `distribute_dev`/`distribute_prod` need a `FIREBASE_TOKEN` environment variable (`firebase login:ci`
-generates one). The same lanes run from `.github/workflows/release.yml`, triggered manually from
-the Actions tab with a flavor choice, using a `FIREBASE_TOKEN` repository secret.
+generates one). The same lanes run from `.github/workflows/release.yml`, using a `FIREBASE_TOKEN`
+repository secret, two ways:
+- **dev**: automatically, on every push to `main`. No one has to remember to ship a dev build,
+  it's always current.
+- **prod**: manually, from the Actions tab (`workflow_dispatch`, flavor choice). Production stays
+  a deliberate human action on purpose, see "Why Firebase App Distribution" in ARCHITECTURE.md.
 
 ## Roadmap
 

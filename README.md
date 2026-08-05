@@ -17,12 +17,12 @@ demo. Built as a public reference project.
 - [x] Unit & Cubit tests (`mocktail`, `bloc_test`)
 - [x] GitHub Actions CI: analyze + test on every PR
 - [x] REST API feature via `Dio`, with local caching (`posts`)
-- [ ] Fastlane
+- [x] Fastlane: build + Firebase App Distribution per flavor (Android); iOS build validation only
 
 ## Tech stack
 
 Flutter, Dart, flutter_bloc, get_it, Dio, Freezed, json_serializable, Firebase Auth, go_router,
-fpdart, hive_ce, very_good_analysis, GitHub Actions
+fpdart, hive_ce, very_good_analysis, GitHub Actions, Fastlane
 
 ## Project structure
 
@@ -63,8 +63,20 @@ Run the test suite:
 flutter test
 ```
 
+## Fastlane
+
+```bash
+fastlane android build_dev        # or build_prod
+fastlane android distribute_dev   # builds, then uploads to Firebase App Distribution
+fastlane ios build_dev            # compiles only, no signing (see ARCHITECTURE.md)
+```
+
+`distribute_dev`/`distribute_prod` need a `FIREBASE_TOKEN` environment variable (`firebase login:ci`
+generates one). The same lanes run from `.github/workflows/release.yml`, triggered manually from
+the Actions tab with a flavor choice, using a `FIREBASE_TOKEN` repository secret.
+
 ## Roadmap
 
-- [ ] Fastlane: automated builds/deploys per flavor, plus flavor-specific builds on release
-  (the other half of the CI story, deliberately kept separate from the analyze/test workflow
-  above)
+- [ ] Real Android release signing (current release builds use Flutter's default debug-signed
+  config, fine for Firebase App Distribution, not for the Play Store)
+- [ ] iOS distribution, blocked on a paid Apple Developer Program account (see ARCHITECTURE.md)

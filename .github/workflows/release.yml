@@ -61,4 +61,6 @@ jobs:
       - name: Distribute via Fastlane
         env:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
-        run: bundle exec fastlane android distribute_${{ steps.flavor.outputs.flavor }}
+        run: >
+          bundle exec fastlane android distribute_${{ steps.flavor.outputs.flavor }}
+          build_number:${{ github.run_number }}

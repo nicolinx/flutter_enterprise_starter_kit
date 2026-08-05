@@ -1,5 +1,7 @@
 # flutter-enterprise-starter-kit
 
+[![CI](https://github.com/nicolinx/flutter_enterprise_starter_kit/actions/workflows/ci.yml/badge.svg)](https://github.com/nicolinx/flutter_enterprise_starter_kit/actions/workflows/ci.yml)
+
 A Flutter starter kit built the way a production app would be set up: Clean Architecture, Cubit
 state management, dependency injection, Firebase, and multi-flavor builds, not just a tutorial
 demo. Built as a public reference project.

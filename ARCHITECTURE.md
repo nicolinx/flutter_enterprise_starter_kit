@@ -217,3 +217,22 @@ publishing a production build is a different risk profile: a bad release is expe
 "ship it" moment for production even when everything technically *could* run unattended.
 "Continuous deployment" for mobile in practice usually means continuous *delivery*: always ready
 to ship, one click away, not shipping itself.
+
+### Build numbers, bumped at build time, not committed to git
+
+Every push to `main` auto-distributes a build, so `pubspec.yaml`'s static version (`1.0.0+1`)
+can't be the real build number, every dev release would look identical in Firebase App
+Distribution, and Android generally rejects re-uploading a duplicate `versionCode` anyway.
+
+The fix isn't having CI edit `pubspec.yaml` and commit the bump back to the repo, that needs
+write access from a CI job, creates commits nobody wrote, and can race with someone else pushing
+at the same time. Instead, `fastlane android build_dev`/`build_prod` accept an optional
+`build_number:` argument and pass it straight to `flutter build ... --build-number=<n>`, which
+overrides `pubspec.yaml`'s number for that build only, nothing is written back to source control.
+`release.yml` passes `build_number:${{ github.run_number }}`, GitHub's own auto-incrementing
+counter for a workflow, so every CI-distributed build gets a unique, increasing number for free.
+Running a lane locally without `build_number:` just falls back to whatever's in `pubspec.yaml`,
+fine for a one-off manual test build.
+
+The human-readable version name (`1.0.0`) is left alone either way, deciding when that changes
+is a product decision, not something to auto-increment on every commit.

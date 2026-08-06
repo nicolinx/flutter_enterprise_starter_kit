@@ -84,3 +84,9 @@ repository secret, two ways:
 - [ ] Real Android release signing (current release builds use Flutter's default debug-signed
   config, fine for Firebase App Distribution, not for the Play Store)
 - [ ] iOS distribution, blocked on a paid Apple Developer Program account (see ARCHITECTURE.md)
+- [ ] Widget tests + coverage reporting (currently only unit/cubit tests exist; wire
+  `flutter test --coverage` into CI with a coverage badge)
+- [ ] Localization (`flutter_localizations`/`intl`), all user-facing strings are hardcoded today
+- [ ] Push notifications via Firebase Cloud Messaging
+- [ ] Analytics via Firebase Analytics
+- [ ] Changelog automation from conventional commits (already used throughout this repo's history)

@@ -21,8 +21,19 @@ CI/CD pipeline, all wired together and ready to build on.
 
 ## Tech stack
 
-Flutter, Dart, flutter_bloc, get_it, Dio, Freezed, json_serializable, Firebase Auth, go_router,
-fpdart, hive_ce, very_good_analysis, GitHub Actions, Fastlane
+| Layer | Tools |
+|---|---|
+| Language & framework | Flutter, Dart |
+| State management | `flutter_bloc` (Cubit) |
+| Dependency injection | `get_it` |
+| Networking | `dio` |
+| Code generation | `freezed`, `json_serializable` |
+| Backend | Firebase Auth |
+| Routing | `go_router` |
+| Functional error handling | `fpdart` |
+| Local storage | `hive_ce` |
+| Linting | `very_good_analysis` |
+| CI/CD | GitHub Actions, Fastlane |
 
 ## Project structure
 

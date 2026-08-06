@@ -1,10 +1,10 @@
-# flutter-enterprise-starter-kit
+# Flutter Enterprise Starter Kit
 
 [![CI](https://github.com/nicolinx/flutter_enterprise_starter_kit/actions/workflows/ci.yml/badge.svg)](https://github.com/nicolinx/flutter_enterprise_starter_kit/actions/workflows/ci.yml)
 
-A Flutter starter kit built the way a production app would be set up: Clean Architecture, Cubit
-state management, dependency injection, Firebase, and multi-flavor builds, not just a tutorial
-demo. Built as a public reference project.
+An open source Flutter starter kit for building apps the way a production team would: Clean
+Architecture, Cubit state management, dependency injection, Firebase integration, and a full
+CI/CD pipeline, all wired together and ready to build on.
 
 ## Features
 
@@ -21,8 +21,19 @@ demo. Built as a public reference project.
 
 ## Tech stack
 
-Flutter, Dart, flutter_bloc, get_it, Dio, Freezed, json_serializable, Firebase Auth, go_router,
-fpdart, hive_ce, very_good_analysis, GitHub Actions, Fastlane
+| Layer | Tools |
+|---|---|
+| Language & framework | Flutter, Dart |
+| State management | `flutter_bloc` (Cubit) |
+| Dependency injection | `get_it` |
+| Networking | `dio` |
+| Code generation | `freezed`, `json_serializable` |
+| Backend | Firebase Auth |
+| Routing | `go_router` |
+| Functional error handling | `fpdart` |
+| Local storage | `hive_ce` |
+| Linting | `very_good_analysis` |
+| CI/CD | GitHub Actions, Fastlane |
 
 ## Project structure
 

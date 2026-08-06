@@ -2,9 +2,7 @@
 
 [![CI](https://github.com/nicolinx/flutter_enterprise_starter_kit/actions/workflows/ci.yml/badge.svg)](https://github.com/nicolinx/flutter_enterprise_starter_kit/actions/workflows/ci.yml)
 
-An open source Flutter starter kit for building apps the way a production team would: Clean
-Architecture, Cubit state management, dependency injection, Firebase integration, and a full
-CI/CD pipeline, all wired together and ready to build on.
+An open source Flutter starter kit showing how a production app is actually built: Clean Architecture, Cubit state management, dependency injection, Firebase, and a complete CI/CD pipeline, ready to build on.
 
 ## Features
 
@@ -21,19 +19,19 @@ CI/CD pipeline, all wired together and ready to build on.
 
 ## Tech stack
 
-| Layer | Tools |
-|---|---|
-| Language & framework | Flutter, Dart |
-| State management | `flutter_bloc` (Cubit) |
-| Dependency injection | `get_it` |
-| Networking | `dio` |
-| Code generation | `freezed`, `json_serializable` |
-| Backend | Firebase Auth |
-| Routing | `go_router` |
-| Functional error handling | `fpdart` |
-| Local storage | `hive_ce` |
-| Linting | `very_good_analysis` |
-| CI/CD | GitHub Actions, Fastlane |
+| Layer                     | Tools                          |
+| ------------------------- | ------------------------------ |
+| Language & framework      | Flutter, Dart                  |
+| State management          | `flutter_bloc` (Cubit)         |
+| Dependency injection      | `get_it`                       |
+| Networking                | `dio`                          |
+| Code generation           | `freezed`, `json_serializable` |
+| Backend                   | Firebase Auth                  |
+| Routing                   | `go_router`                    |
+| Functional error handling | `fpdart`                       |
+| Local storage             | `hive_ce`                      |
+| Linting                   | `very_good_analysis`           |
+| CI/CD                     | GitHub Actions, Fastlane       |
 
 ## Project structure
 
@@ -85,6 +83,7 @@ fastlane ios build_dev            # compiles only, no signing (see ARCHITECTURE.
 `distribute_dev`/`distribute_prod` need a `FIREBASE_TOKEN` environment variable (`firebase login:ci`
 generates one). The same lanes run from `.github/workflows/release.yml`, using a `FIREBASE_TOKEN`
 repository secret, two ways:
+
 - **dev**: automatically, on every push to `main`. No one has to remember to ship a dev build,
   it's always current.
 - **prod**: manually, from the Actions tab (`workflow_dispatch`, flavor choice). Production stays
@@ -93,10 +92,10 @@ repository secret, two ways:
 ## Roadmap
 
 - [ ] Real Android release signing (current release builds use Flutter's default debug-signed
-  config, fine for Firebase App Distribution, not for the Play Store)
+      config, fine for Firebase App Distribution, not for the Play Store)
 - [ ] iOS distribution, blocked on a paid Apple Developer Program account (see ARCHITECTURE.md)
 - [ ] Widget tests + coverage reporting (currently only unit/cubit tests exist; wire
-  `flutter test --coverage` into CI with a coverage badge)
+      `flutter test --coverage` into CI with a coverage badge)
 - [ ] Localization (`flutter_localizations`/`intl`), all user-facing strings are hardcoded today
 - [ ] Push notifications via Firebase Cloud Messaging
 - [ ] Analytics via Firebase Analytics

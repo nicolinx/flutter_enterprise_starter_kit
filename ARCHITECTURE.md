@@ -176,6 +176,36 @@ requests return a plausible-looking success response, but nothing is actually pe
 server-side, refreshing the list after creating a post won't show it. That's expected, not a bug
 in this codebase.
 
+## Where business logic lives vs. UI
+
+Business logic is not "wherever it fits" — it has a specific home per concern:
+
+- **Business logic = use cases** (`domain/usecases/`), one class per action. A use case's `call()`
+  just forwards to the repository interface; the actual logic (branch on connectivity,
+  cache-then-return, map exceptions to failures) lives one layer down, in the **repository
+  implementation** (`data/repositories/*_impl.dart`), not in the use case and not in the cubit.
+- **Orchestration/UI state = cubits** (`presentation/cubit/`). A cubit calls one or more use
+  cases and translates the `Either<Failure, T>` result into UI state; it holds no business rules
+  of its own beyond "what should the screen show right now." `PostFormCubit.submit()` is a good
+  example: it decides *which* use case to call (`create` vs. `update`), but the create/update
+  behavior itself is in the use case + repository, not the cubit.
+- **UI = pages/widgets** (`presentation/pages/`, `presentation/widgets/`). Zero business logic. A
+  page's `build()` only lays out widgets and reads/reacts to cubit state; it never calls a
+  repository, use case, or data source directly, and never contains a conditional business rule.
+- **Data shaping = models** (`data/models/`). JSON parsing or SDK-object-to-entity mapping lives
+  here, never inline in a repository — a datasource returns a `Model`, a repository converts
+  `Model.toDomain()` to an `Entity` before returning it via `Either`.
+
+## Testing shape
+
+Tests mirror `lib/`'s structure 1:1 under `test/`, e.g.
+`lib/features/posts/presentation/cubit/posts_cubit.dart` ->
+`test/features/posts/presentation/cubit/posts_cubit_test.dart`. Repository tests mock the
+datasource + `NetworkInfo` (`mocktail`) and assert on the returned `Either`; cubit tests
+(`bloc_test`) mock the use case and assert on the emitted state sequence. New tests should follow
+the same mirrored path and mock one layer down only, never reach two layers down into a fake
+Dio/Firebase call.
+
 ## Why Firebase App Distribution, not the app stores
 
 `fastlane/Fastfile` distributes Android builds through Firebase App Distribution rather than the

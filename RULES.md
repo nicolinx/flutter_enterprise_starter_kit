@@ -160,3 +160,10 @@ handling, and the reasoning behind each — see [`ARCHITECTURE.md`](ARCHITECTURE
 - No `print()` anywhere in `lib/`. If you need runtime diagnostics, add a proper logging
   interceptor/service instead (see `core/network/interceptors/logging_interceptor.dart` for the
   existing pattern with `pretty_dio_logger`).
+
+## Git commit messages
+
+- Keep commit messages short: a single summary line. Only add a body when the *why* genuinely
+  isn't obvious from the diff or the summary line itself.
+- Do not add a `Co-Authored-By` trailer (or any other AI-attribution trailer/footer) to commits in
+  this repository.

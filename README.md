@@ -100,3 +100,5 @@ repository secret, two ways:
 - [ ] Push notifications via Firebase Cloud Messaging
 - [ ] Analytics via Firebase Analytics
 - [ ] Changelog automation from conventional commits (already used throughout this repo's history)
+- [ ] Deep-link handling
+- [ ] Network API retry mechanism

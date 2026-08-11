@@ -102,3 +102,4 @@ repository secret, two ways:
 - [ ] Changelog automation from conventional commits (already used throughout this repo's history)
 - [ ] Deep-link handling
 - [ ] Network API retry mechanism
+- [ ] Feature flags or remote config

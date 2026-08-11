@@ -16,6 +16,9 @@ An open source Flutter starter kit showing how a production app is actually buil
 - [x] GitHub Actions CI: analyze + test on every PR
 - [x] REST API feature via `Dio`, with local caching (`posts`)
 - [x] Fastlane: build + Firebase App Distribution per flavor (Android); iOS build validation only
+- [x] Agentic coding-ready: `CLAUDE.md` / `RULES.md` / `ARCHITECTURE.md` give AI coding agents
+      (Claude Code, Cursor, etc.) enough context to generate code that matches this repo's
+      conventions instead of guessing at them
 
 ## Tech stack
 
@@ -49,6 +52,21 @@ Every feature follows the same `data -> domain -> presentation` layering. See
 **[ARCHITECTURE.md](ARCHITECTURE.md)** for why each piece exists, a full request walkthrough, and
 the platform-specific gotchas (Firebase's duplicate-app conflict, macOS entitlements) hit and
 fixed along the way.
+
+## Agentic coding support
+
+This repo ships with context files so AI coding agents (Claude Code, Cursor, etc.) can generate
+code that matches its existing conventions instead of inferring them from scratch each time:
+
+- **[CLAUDE.md](CLAUDE.md)** — entry point read automatically by Claude Code; points an agent at
+  the other two files and lists the commands it needs (build_runner, test, analyze, format).
+- **[RULES.md](RULES.md)** — strict, binding coding standards: null safety, `const` usage,
+  naming, widget extraction, package usage.
+- **[ARCHITECTURE.md](ARCHITECTURE.md)** — where code belongs (layer boundaries, state
+  management, routing, DI, error handling) and why each decision was made.
+
+Tools that don't read `CLAUDE.md` natively can usually be pointed at it directly (e.g. as a
+`.cursorrules`/custom-instructions source) since it's plain Markdown with no Claude-specific syntax.
 
 ## Getting started
 

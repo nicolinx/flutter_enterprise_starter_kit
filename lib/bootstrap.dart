@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_enterprise_starter_kit/app.dart';
 import 'package:flutter_enterprise_starter_kit/core/config/flavor_config.dart';
 import 'package:flutter_enterprise_starter_kit/core/di/injection.dart';
+import 'package:flutter_enterprise_starter_kit/core/feature_flags/feature_flags.dart';
 import 'package:flutter_enterprise_starter_kit/firebase_options_development.dart'
     as dev;
 import 'package:flutter_enterprise_starter_kit/firebase_options_production.dart'
@@ -19,6 +20,7 @@ Future<void> bootstrap() async {
       WidgetsFlutterBinding.ensureInitialized();
       await Firebase.initializeApp(options: _firebaseOptionsForFlavor());
       await configureDependencies();
+      await getIt<FeatureFlags>().initialize();
       runApp(App());
     },
     (error, stackTrace) {

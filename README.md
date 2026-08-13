@@ -19,6 +19,7 @@ An open source Flutter starter kit showing how a production app is actually buil
 - [x] Agentic coding-ready: `CLAUDE.md` / `RULES.md` / `ARCHITECTURE.md` give AI coding agents
       (Claude Code, Cursor, etc.) enough context to generate code that matches this repo's
       conventions instead of guessing at them
+- [x] Feature flags via Firebase Remote Config, with a local dev override (`core/feature_flags/`)
 
 ## Tech stack
 
@@ -120,4 +121,3 @@ repository secret, two ways:
 - [ ] Changelog automation from conventional commits (already used throughout this repo's history)
 - [ ] Deep-link handling
 - [ ] Network API retry mechanism
-- [ ] Feature flags or remote config

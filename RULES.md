@@ -130,6 +130,9 @@ handling, and the reasoning behind each — see [`ARCHITECTURE.md`](ARCHITECTURE
 - **Connectivity**: `connectivity_plus`, wrapped by `NetworkInfo`/`NetworkInfoImpl` — check
   `networkInfo.isConnected` in a repository, never call `connectivity_plus` directly outside that
   wrapper.
+- **Feature flags**: `firebase_remote_config`, wrapped by `FeatureFlags`/`FeatureFlagsImpl` in
+  `core/feature_flags/`. Always reference a flag through the `FeatureFlag` enum
+  (`core/feature_flags/feature_flag.dart`), never a raw Remote Config string key inline.
 
 ## Imports & structure
 

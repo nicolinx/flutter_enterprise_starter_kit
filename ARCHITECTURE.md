@@ -45,6 +45,33 @@ instead of hidden in a try/catch the caller has to remember to write.
 `Failure` means the analyzer catches a missing case at compile time instead of a silent
 fallthrough at runtime.
 
+## Why Firebase Remote Config for feature flags
+
+Same reasoning as Firebase App Distribution below: the project already runs two Firebase projects
+(`flutter-enterprise-kit-dev`/`-prod`) for Auth, so Remote Config is a zero-new-vendor addition
+rather than pulling in a third-party flag service (LaunchDarkly, Flagsmith, Unleash) purely to
+demonstrate the pattern.
+
+`lib/core/feature_flags/` wraps it behind a `FeatureFlags` interface (`NetworkInfo`'s pattern:
+app code never touches the Firebase SDK directly), with every known flag centralized in the
+`FeatureFlag` enum (`lib/core/feature_flags/feature_flag.dart`) rather than raw string keys
+scattered through the app. It lives in `core/`, not `features/`, since it's cross-cutting
+infrastructure with no business rules or screen of its own, the same category as `NetworkInfo`.
+
+Two things worth calling out:
+- **`initialize()` fails open.** It calls `setDefaults()` from the `FeatureFlag` registry, then
+  `fetchAndActivate()` inside a deliberately broad `try`/`catch` that swallows any failure. A
+  flag-fetch failure must never block app startup, so this is treated the same as `bootstrap.dart`'s
+  own `runZonedGuarded`, not a data-layer call subject to the "no generic catch" rule in `RULES.md`.
+- **Local overrides beat the remote value.** `FeatureFlagsImpl` checks a Hive box
+  (`feature_flag_overrides`) before falling back to `_remoteConfig.getBool(...)`, so QA/devs can
+  flip a flag locally without waiting on a console change or network round trip — the `HomePage`
+  demo's dev-only `Switch` uses exactly this path, which is also why the demo works with no prior
+  Firebase console setup.
+
+The `home_banner` parameter this ships with only needs to exist in the Firebase console if you
+want to control it *remotely*; the local-override path works standalone.
+
 ## Why `very_good_analysis` over `flutter_lints`
 
 A stricter, more opinionated lint set. Two rules are deliberately turned off (see

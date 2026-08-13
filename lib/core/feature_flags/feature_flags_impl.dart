@@ -11,7 +11,7 @@ class FeatureFlagsImpl implements FeatureFlags {
 
   /// Hive stores primitives natively, so each override is just `flag.name`
   /// -> `bool`, no generated `TypeAdapter` needed.
-  final Box<dynamic> _overridesBox;
+  final Box<bool> _overridesBox;
 
   @override
   Future<void> initialize() async {
@@ -37,11 +37,9 @@ class FeatureFlagsImpl implements FeatureFlags {
   }
 
   @override
-  bool isEnabled(FeatureFlag flag) {
-    final override = _overridesBox.get(flag.name) as bool?;
-    if (override != null) return override;
-    return _remoteConfig.getBool(flag.remoteConfigKey);
-  }
+  bool isEnabled(FeatureFlag flag) =>
+      _overridesBox.get(flag.name) ??
+      _remoteConfig.getBool(flag.remoteConfigKey);
 
   @override
   Future<void> setOverride(FeatureFlag flag, {required bool? value}) async {

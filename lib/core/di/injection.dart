@@ -21,7 +21,7 @@ const featureFlagOverridesBoxName = 'feature_flag_overrides';
 /// features/auth/auth_injection.dart) and get called from here.
 Future<void> configureDependencies() async {
   await Hive.initFlutter();
-  final flagOverridesBox = await Hive.openBox<dynamic>(
+  final flagOverridesBox = await Hive.openBox<bool>(
     featureFlagOverridesBoxName,
   );
 

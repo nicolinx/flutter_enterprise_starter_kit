@@ -51,6 +51,9 @@ class FeatureFlagsImpl implements FeatureFlags {
       _remoteConfig.getBool(flag.remoteConfigKey);
 
   @override
+  bool? overrideFor(FeatureFlag flag) => _overridesBox.get(flag.name);
+
+  @override
   Future<void> setOverride(FeatureFlag flag, {required bool? value}) async {
     if (value == null) {
       await _overridesBox.delete(flag.name);

@@ -9,6 +9,10 @@ abstract class FeatureFlags {
 
   bool isEnabled(FeatureFlag flag);
 
+  /// The current local override for [flag], or `null` if none is set (the
+  /// flag is following its remote/default value).
+  bool? overrideFor(FeatureFlag flag);
+
   /// Forces a flag to a value on this device, ignoring the remote value.
   /// Pass `null` to remove the override and go back to using the remote
   /// (or default) value.

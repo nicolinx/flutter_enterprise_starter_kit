@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:firebase_remote_config/firebase_remote_config.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_enterprise_starter_kit/core/config/flavor_config.dart';
 import 'package:flutter_enterprise_starter_kit/core/feature_flags/feature_flag.dart';
 import 'package:flutter_enterprise_starter_kit/core/feature_flags/feature_flags.dart';
@@ -28,11 +31,17 @@ class FeatureFlagsImpl implements FeatureFlags {
         flag.remoteConfigKey: flag.defaultValue,
     });
 
+    // Runs in the background so a slow/offline network never delays
+    // `runApp()` — `isEnabled()` already has the defaults set above to fall
+    // back on until this completes.
+    unawaited(_fetchAndActivate());
+  }
+
+  Future<void> _fetchAndActivate() async {
     try {
       await _remoteConfig.fetchAndActivate();
-    } on Exception {
-      // If the fetch fails, just keep using the defaults set above instead
-      // of blocking app startup.
+    } on Object catch (error, stackTrace) {
+      debugPrint('Feature flags fetch failed: $error\n$stackTrace');
     }
   }
 

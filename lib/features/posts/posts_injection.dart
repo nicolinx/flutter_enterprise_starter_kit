@@ -19,10 +19,9 @@ const postsCacheBoxName = 'posts_cache';
 
 /// Registers everything the `posts` feature needs. Called (async, unlike
 /// `configureAuthDependencies`) from `core/di/injection.dart`, since opening
-/// the Hive box is itself async. `Hive.initFlutter()` is called once in
-/// `core/di/injection.dart` before this runs, shared with the feature-flags
-/// override box.
+/// the Hive box is itself async.
 Future<void> configurePostsDependencies() async {
+  await Hive.initFlutter();
   final box = await Hive.openBox<dynamic>(postsCacheBoxName);
 
   getIt

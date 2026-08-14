@@ -10,7 +10,7 @@ An open source Flutter starter kit showing how a production app is actually buil
 - [x] Cubit state management (`flutter_bloc`)
 - [x] Dependency injection (`get_it`)
 - [x] Firebase Authentication: email/password sign-in, register, sign-out
-- [x] Dev/prod flavors, each with its own Firebase project
+- [x] Dev/prod flavors, each with its own Firebase project — [bring your own project](FIREBASE_SETUP.md)
 - [x] Typed error handling (`Freezed` + `Either`, via `fpdart`)
 - [x] Unit & Cubit tests (`mocktail`, `bloc_test`)
 - [x] GitHub Actions CI: analyze + test on every PR
@@ -52,7 +52,8 @@ lib/
 Every feature follows the same `data -> domain -> presentation` layering. See
 **[ARCHITECTURE.md](ARCHITECTURE.md)** for why each piece exists, a full request walkthrough, and
 the platform-specific gotchas (Firebase's duplicate-app conflict, macOS entitlements) hit and
-fixed along the way.
+fixed along the way. See **[FIREBASE_SETUP.md](FIREBASE_SETUP.md)** to connect your own Firebase
+projects instead of this repo's demo ones.
 
 ## Agentic coding support
 
@@ -77,13 +78,8 @@ dart run build_runner build --delete-conflicting-outputs   # generates *.freezed
 flutter run -t lib/main_development.dart                   # or lib/main_production.dart
 ```
 
-The checked-in `firebase_options_*.dart` files point at this repo's own Firebase projects. To run
-against your own, create two Firebase projects with Email/Password Authentication enabled, then:
-
-```bash
-flutterfire configure --project=<your-dev-project> --out=lib/firebase_options_development.dart
-flutterfire configure --project=<your-prod-project> --out=lib/firebase_options_production.dart
-```
+The checked-in `firebase_options_*.dart` files point at this repo's own Firebase projects. To
+connect your own, follow **[FIREBASE_SETUP.md](FIREBASE_SETUP.md)**.
 
 Run the test suite:
 
@@ -121,3 +117,10 @@ repository secret, two ways:
 - [ ] Changelog automation from conventional commits (already used throughout this repo's history)
 - [ ] Deep-link handling
 - [ ] Network API retry mechanism
+
+## Author
+
+**Nicodemus Lin** — Software Engineer
+
+[![Website](https://img.shields.io/badge/Website-nicolin.dev-4F46E5?style=for-the-badge&logo=globe&logoColor=white)](https://www.nicolin.dev/)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-Nicodemus_Lin-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/nicodemus-lin/)

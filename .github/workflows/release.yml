@@ -5,7 +5,7 @@ name: Release
 #   human action needed, the standard "internal build is always current"
 #   pattern.
 # - workflow_dispatch: manual, lets you pick dev or prod. Production stays
-#   manual on purpose (see ARCHITECTURE.md), a deliberate human decision,
+#   manual on purpose (see docs/ARCHITECTURE.md), a deliberate human decision,
 #   not a technical limitation.
 on:
   push:

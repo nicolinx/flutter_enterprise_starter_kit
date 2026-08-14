@@ -10,7 +10,7 @@ An open source Flutter starter kit showing how a production app is actually buil
 - [x] Cubit state management (`flutter_bloc`)
 - [x] Dependency injection (`get_it`)
 - [x] Firebase Authentication: email/password sign-in, register, sign-out
-- [x] Dev/prod flavors, each with its own Firebase project — [bring your own project](FIREBASE_SETUP.md)
+- [x] Dev/prod flavors, each with its own Firebase project — [bring your own project](docs/FIREBASE_SETUP.md)
 - [x] Typed error handling (`Freezed` + `Either`, via `fpdart`)
 - [x] Unit & Cubit tests (`mocktail`, `bloc_test`)
 - [x] GitHub Actions CI: analyze + test on every PR
@@ -50,9 +50,9 @@ lib/
 ```
 
 Every feature follows the same `data -> domain -> presentation` layering. See
-**[ARCHITECTURE.md](ARCHITECTURE.md)** for why each piece exists, a full request walkthrough, and
+**[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)** for why each piece exists, a full request walkthrough, and
 the platform-specific gotchas (Firebase's duplicate-app conflict, macOS entitlements) hit and
-fixed along the way. See **[FIREBASE_SETUP.md](FIREBASE_SETUP.md)** to connect your own Firebase
+fixed along the way. See **[docs/FIREBASE_SETUP.md](docs/FIREBASE_SETUP.md)** to connect your own Firebase
 projects instead of this repo's demo ones.
 
 ## Agentic coding support
@@ -62,9 +62,9 @@ code that matches its existing conventions instead of inferring them from scratc
 
 - **[CLAUDE.md](CLAUDE.md)** — entry point read automatically by Claude Code; points an agent at
   the other two files and lists the commands it needs (build_runner, test, analyze, format).
-- **[RULES.md](RULES.md)** — strict, binding coding standards: null safety, `const` usage,
+- **[docs/RULES.md](docs/RULES.md)** — strict, binding coding standards: null safety, `const` usage,
   naming, widget extraction, package usage.
-- **[ARCHITECTURE.md](ARCHITECTURE.md)** — where code belongs (layer boundaries, state
+- **[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)** — where code belongs (layer boundaries, state
   management, routing, DI, error handling) and why each decision was made.
 
 Tools that don't read `CLAUDE.md` natively can usually be pointed at it directly (e.g. as a
@@ -79,7 +79,7 @@ flutter run -t lib/main_development.dart                   # or lib/main_product
 ```
 
 The checked-in `firebase_options_*.dart` files point at this repo's own Firebase projects. To
-connect your own, follow **[FIREBASE_SETUP.md](FIREBASE_SETUP.md)**.
+connect your own, follow **[docs/FIREBASE_SETUP.md](docs/FIREBASE_SETUP.md)**.
 
 Run the test suite:
 
@@ -92,7 +92,7 @@ flutter test
 ```bash
 fastlane android build_dev        # or build_prod
 fastlane android distribute_dev   # builds, then uploads to Firebase App Distribution
-fastlane ios build_dev            # compiles only, no signing (see ARCHITECTURE.md)
+fastlane ios build_dev            # compiles only, no signing (see docs/ARCHITECTURE.md)
 ```
 
 `distribute_dev`/`distribute_prod` need a `FIREBASE_TOKEN` environment variable (`firebase login:ci`
@@ -102,13 +102,13 @@ repository secret, two ways:
 - **dev**: automatically, on every push to `main`. No one has to remember to ship a dev build,
   it's always current.
 - **prod**: manually, from the Actions tab (`workflow_dispatch`, flavor choice). Production stays
-  a deliberate human action on purpose, see "Why Firebase App Distribution" in ARCHITECTURE.md.
+  a deliberate human action on purpose, see "Why Firebase App Distribution" in docs/ARCHITECTURE.md.
 
 ## Roadmap
 
 - [ ] Real Android release signing (current release builds use Flutter's default debug-signed
       config, fine for Firebase App Distribution, not for the Play Store)
-- [ ] iOS distribution, blocked on a paid Apple Developer Program account (see ARCHITECTURE.md)
+- [ ] iOS distribution, blocked on a paid Apple Developer Program account (see docs/ARCHITECTURE.md)
 - [ ] Widget tests + coverage reporting (currently only unit/cubit tests exist; wire
       `flutter test --coverage` into CI with a coverage badge)
 - [ ] Localization (`flutter_localizations`/`intl`), all user-facing strings are hardcoded today

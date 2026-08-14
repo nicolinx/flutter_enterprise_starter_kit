@@ -6,9 +6,9 @@ Guidance for Claude Code when working in this repository.
 
 Before writing or modifying any Dart code, read:
 
-- **[RULES.md](RULES.md)** — strict coding standards (null safety, `const`, naming,
+- **[docs/RULES.md](docs/RULES.md)** — strict coding standards (null safety, `const`, naming,
   widget extraction, package usage). Treat these as binding, not stylistic suggestions.
-- **[ARCHITECTURE.md](ARCHITECTURE.md)** — the single architecture reference: feature-first Clean
+- **[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)** — the single architecture reference: feature-first Clean
   Architecture, layer boundaries, state management, routing, DI, error handling, and *why* each
   decision was made, plus platform-specific gotchas (Firebase duplicate-app conflict, macOS
   entitlements) and CI/CD reasoning. Read this to know both *where* new code belongs and *why* the
@@ -35,11 +35,11 @@ sync; never hand-edit them.
 
 ## Non-negotiables
 
-- Follow `RULES.md` exactly: no `var`/`dynamic`, `final`-first, `const` everywhere possible,
+- Follow `docs/RULES.md` exactly: no `var`/`dynamic`, `final`-first, `const` everywhere possible,
   no `!` bang operator, no bare `try`/`catch` in cubits or use cases (only repositories catch
   exceptions and convert to `Either<Failure, T>`).
 - Respect the dependency direction: `presentation` -> `domain` <- `data`. `domain` never imports
   Flutter/Firebase/Dio. A cubit depends on use cases only, never on a repository or data source.
 - Don't add a `staging` flavor, switch off `Either`/`fpdart`, introduce `Bloc` events, or swap in
-  `injectable`-style DI codegen — these were deliberately rejected; see `ARCHITECTURE.md` before
+  `injectable`-style DI codegen — these were deliberately rejected; see `docs/ARCHITECTURE.md` before
   reopening any of them.

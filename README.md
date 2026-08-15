@@ -1,6 +1,8 @@
 # Flutter Enterprise Starter Kit
 
-[![CI](https://github.com/nicolinx/flutter_enterprise_starter_kit/actions/workflows/ci.yml/badge.svg)](https://github.com/nicolinx/flutter_enterprise_starter_kit/actions/workflows/ci.yml)
+[![CI](https://img.shields.io/github/actions/workflow/status/nicolinx/flutter_enterprise_starter_kit/ci.yml?style=flat)](https://github.com/nicolinx/flutter_enterprise_starter_kit/actions/workflows/ci.yml)
+[![Stars](https://img.shields.io/github/stars/nicolinx/flutter_enterprise_starter_kit?style=flat)](https://github.com/nicolinx/flutter_enterprise_starter_kit/stargazers)
+[![Forks](https://img.shields.io/github/forks/nicolinx/flutter_enterprise_starter_kit?style=flat)](https://github.com/nicolinx/flutter_enterprise_starter_kit/network/members)
 
 An open source Flutter starter kit showing how a production app is actually built: Clean Architecture, Cubit state management, dependency injection, Firebase, and a complete CI/CD pipeline, ready to build on.
 

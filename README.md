@@ -108,6 +108,7 @@ repository secret, two ways:
 
 ## Roadmap
 
+- [ ] Reusable base components for one-off Cubit effects (SnackBars, navigation, dialogs)
 - [ ] Real Android release signing (current release builds use Flutter's default debug-signed
       config, fine for Firebase App Distribution, not for the Play Store)
 - [ ] iOS distribution, blocked on a paid Apple Developer Program account (see docs/ARCHITECTURE.md)

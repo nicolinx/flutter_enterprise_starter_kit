@@ -22,6 +22,7 @@ An open source Flutter starter kit showing how a production app is actually buil
       (Claude Code, Cursor, etc.) enough context to generate code that matches this repo's
       conventions instead of guessing at them
 - [x] Feature flags via Firebase Remote Config, with a local dev override (`core/feature_flags/`)
+- [x] Network API retry mechanism: exponential backoff for transient `Dio` failures (`core/network/interceptors/`)
 
 ## Tech stack
 
@@ -119,7 +120,6 @@ repository secret, two ways:
 - [ ] Analytics via Firebase Analytics
 - [ ] Changelog automation from conventional commits (already used throughout this repo's history)
 - [ ] Deep-link handling
-- [ ] Network API retry mechanism
 
 ## Author
 

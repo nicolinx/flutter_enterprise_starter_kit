@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_enterprise_starter_kit/core/network/interceptors/error_interceptor.dart';
 import 'package:flutter_enterprise_starter_kit/core/network/interceptors/logging_interceptor.dart';
+import 'package:flutter_enterprise_starter_kit/core/network/interceptors/retry_interceptor.dart';
 
 /// Builds the single [Dio] instance the app registers in DI. Kept as a
 /// factory function (rather than a class) since there's no per-call state to
@@ -16,6 +17,7 @@ Dio createDioClient({required String baseUrl}) {
   );
 
   dio.interceptors.add(ErrorInterceptor());
+  dio.interceptors.add(RetryInterceptor(dio));
 
   if (kDebugMode) {
     dio.interceptors.add(loggingInterceptor);

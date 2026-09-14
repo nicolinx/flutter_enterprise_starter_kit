@@ -1,0 +1,32 @@
+{
+  "categories": [
+    {
+      "title": "## Features",
+      "labels": [],
+      "rules": [{ "pattern": "^feat", "on_property": "title", "flags": "gimu" }]
+    },
+    {
+      "title": "## Fixes",
+      "labels": [],
+      "rules": [{ "pattern": "^fix", "on_property": "title", "flags": "gimu" }]
+    },
+    {
+      "title": "## Documentation",
+      "labels": [],
+      "rules": [{ "pattern": "^docs", "on_property": "title", "flags": "gimu" }]
+    },
+    {
+      "title": "## Maintenance",
+      "labels": [],
+      "rules": [
+        { "pattern": "^(chore|refactor|test|ci|build|style)", "on_property": "title", "flags": "gimu" }
+      ]
+    }
+  ],
+  "template": "#{{CHANGELOG}}",
+  "pr_template": "- #{{TITLE}} (##{{NUMBER}})",
+  "empty_template": "- no changes",
+  "label_extractor": [],
+  "duplicate_filter": { "pattern": "\\s*\\(#\\d+\\)\\s*$", "on_property": "title" },
+  "trim_values": true
+}

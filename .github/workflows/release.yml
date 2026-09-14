@@ -92,6 +92,14 @@ jobs:
         uses: mikepenz/release-changelog-builder-action@v5
         with:
           configuration: .github/changelog-config.json
+          # The v<version> tag for *this* release doesn't exist yet at this
+          # point (softprops/action-gh-release creates it in the next step),
+          # so without an explicit toTag the action resolves the nearest tag
+          # reachable from HEAD as the end boundary — which is the *previous*
+          # release tag, producing a changelog for the wrong (older) range.
+          # Pinning toTag to the current commit fixes the range to
+          # "since the last real tag, up to now".
+          toTag: ${{ github.sha }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 

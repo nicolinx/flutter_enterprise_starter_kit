@@ -27,6 +27,12 @@ jobs:
       contents: write # needed to create the GitHub Release + tag on prod
     steps:
       - uses: actions/checkout@v4
+        with:
+          # release-changelog-builder-action needs full history + tags to
+          # compute "commits since the last tag" on the prod path — the
+          # default shallow, tag-less checkout leaves it with nothing to
+          # describe.
+          fetch-depth: 0
 
       - uses: subosito/flutter-action@v2
         with:

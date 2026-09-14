@@ -23,6 +23,8 @@ An open source Flutter starter kit showing how a production app is actually buil
       conventions instead of guessing at them
 - [x] Feature flags via Firebase Remote Config, with a local dev override (`core/feature_flags/`)
 - [x] Network API retry mechanism: exponential backoff for transient `Dio` failures (`core/network/interceptors/`)
+- [x] Changelog automation from conventional commits: PR title lint (`.github/workflows/pr-title.yml`)
+      + auto-generated GitHub Release notes on prod releases
 
 ## Tech stack
 
@@ -107,6 +109,12 @@ repository secret, two ways:
 - **prod**: manually, from the Actions tab (`workflow_dispatch`, flavor choice). Production stays
   a deliberate human action on purpose, see "Why Firebase App Distribution" in docs/ARCHITECTURE.md.
 
+A `prod` release also publishes a GitHub Release tagged with the current `pubspec.yaml` version,
+with notes auto-generated from merged PR titles grouped by conventional-commit type (Features /
+Fixes / Documentation / Maintenance). PR titles are linted (`.github/workflows/pr-title.yml`) to
+enforce the conventional-commit format, since squash-merging turns a PR title into the commit
+subject on `main`.
+
 ## Roadmap
 
 - [ ] Reusable base components for one-off Cubit effects (SnackBars, navigation, dialogs)
@@ -118,7 +126,6 @@ repository secret, two ways:
 - [ ] Localization (`flutter_localizations`/`intl`), all user-facing strings are hardcoded today
 - [ ] Push notifications via Firebase Cloud Messaging
 - [ ] Analytics via Firebase Analytics
-- [ ] Changelog automation from conventional commits (already used throughout this repo's history)
 - [ ] Deep-link handling
 
 ## Author

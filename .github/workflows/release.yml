@@ -65,3 +65,32 @@ jobs:
         run: >
           bundle exec fastlane android distribute_${{ steps.flavor.outputs.flavor }}
           build_number:${{ github.run_number }}
+
+      # Release notes only for prod: that's the only build that represents a
+      # real, shippable version. Notes are published as a GitHub Release, not
+      # committed back to the repo — pubspec.yaml's version stays a deliberate
+      # human decision (see "Build numbers, bumped at build time, not
+      # committed to git" in docs/ARCHITECTURE.md).
+      - name: Read app version
+        if: steps.flavor.outputs.flavor == 'prod'
+        id: version
+        run: |
+          version=$(grep '^version:' pubspec.yaml | cut -d ' ' -f2 | cut -d '+' -f1)
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+
+      - name: Build changelog
+        if: steps.flavor.outputs.flavor == 'prod'
+        id: changelog
+        uses: mikepenz/release-changelog-builder-action@v5
+        with:
+          configuration: .github/changelog-config.json
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Publish GitHub Release
+        if: steps.flavor.outputs.flavor == 'prod'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ steps.version.outputs.version }}
+          name: v${{ steps.version.outputs.version }}
+          body: ${{ steps.changelog.outputs.changelog }}
